@@ -55,25 +55,22 @@ let users = [
     }
 ]
 
-function cleanBalance(balanceString) {
-    return balanceString.replace(/[$,]/g, "");
+
+function convertBalanceToNumber(balanceString) {
+    let numericString = balanceString.replace(/[$,]/g, "");
+    return Number(numericString);
 }
 
 let phoneNumbers = users
-    .filter(user => cleanBalance(user.balance).replace('.', '') > '200000')
+    .filter(user => convertBalanceToNumber(user.balance) > 2000)
     .map(user => user.phone);
 
-console.log("Phone numbers of users with the balance over $2000:", phoneNumbers);
+console.log("Phone numbers of users with balance over $2000:", phoneNumbers);
 
 let totalBalance = users.reduce((sum, user) => {
-    let cleanedBalance = cleanBalance(user.balance);
-    let [dollars, cents = '00'] = cleanedBalance.split('.');
-    if (cents.length === 1) cents += 0;
+    return sum + convertBalanceToNumber(user.balance);
+}, 0);
 
-    let userBalanceCents = dollars + cents;
-    return sum + parseInt(userBalanceCents);
-}, 0 );
+console.log("Sum of all user balances:", totalBalance.toFixed(2));
 
-let totalBalanceDollars = (totalBalance / 100).toFixed(2);
 
-console.log("Sum of all user balances:", totalBalanceDollars);
